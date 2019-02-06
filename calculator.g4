@@ -8,9 +8,9 @@ import java.lang.Math;
 @parser::members
 {
 /** "memory" for our calculator; variable/value pairs go here */
-Map<String, Integer> memory = new HashMap<String, Integer>();
+Map<String, Double> memory = new HashMap<String, Double>();
 
-int eval(int l, int op, int r)
+double eval(double l, int op, double r)
 	{ switch(op) 
 		{ case MULT: return l * r;
 		case DIV: return l / r;
@@ -39,7 +39,7 @@ stat: expr NEWLINE
 
 ;
 
-expr returns [int i]:
+expr returns [double i]:
     er = expr op = (MULT | '/') el = expr 
     	{$i = eval($er.i, $op.type, $el.i);}
     | er = expr op = ('+' | '-') el = expr
@@ -51,12 +51,23 @@ expr returns [int i]:
 	$i = memory.containsKey(id) ? memory.get(id) : 0;
 	}
     | 'sqrt(' e=expr ')' {
-       $i = (int)Math.sqrt($e.i); 
+       $i = Math.sqrt($e.i); 
     }
     | 'read()' NEWLINE INT {
         $i=Integer.parseInt($INT.text);
     }
-
+    | 's(' expr ')' {
+        $i = Math.sin($expr.i);
+    }
+    | 'c(' expr ')' {
+        $i = Math.cos($expr.i);
+    }
+    | 'l(' expr ')' {
+        $i = Math.log($expr.i);
+    }
+    | 'e(' expr ')' {
+        $i = Math.exp($expr.i);
+    }
     | '(' e=expr ')'	          
     ;
 
