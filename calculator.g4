@@ -2,6 +2,7 @@ grammar calculator;
 
 @header {
 import java.util.*;
+import java.lang.Math;
 }
 
 @parser::members
@@ -22,28 +23,40 @@ int eval(int l, int op, int r)
 
 exprList: topExpr (';' topExpr)*';'?;
 
-topExpr: expr
-  { System.out.println("result: "+ Integer.toString($expr.i));};
+topExpr: stat+ ;
+  //{ System.out.println("result: "+ Integer.toString($expr.i));};
+
+stat: expr NEWLINE
+    {
+          System.out.println($expr.i);
+    }
+    | ID '=' expr NEWLINE
+        {
+	  String id = $ID.text;
+          memory.put(id, $expr.i);
+	}
+    | NEWLINE
+
+;
 
 expr returns [int i]:
     er = expr op = (MULT | '/') el = expr 
-    	{$i = eval($er.i, $op.type, $el.i);
-	System.out.println($i);}
+    	{$i = eval($er.i, $op.type, $el.i);}
     | er = expr op = ('+' | '-') el = expr
-    	{$i = eval($er.i, $op.type, $el.i);
-	System.out.println($i);}
+    	{$i = eval($er.i, $op.type, $el.i);}
     | INT
         { $i=Integer.parseInt($INT.text);} 
-    | ID EQUAL INT
-    	{
-	  String id = $ID.text;
-	  memory.put(id, Integer.parseInt($INT.text));
-	  System.out.println(memory.get(id));
-	}
     | ID
     	{ String id = $ID.text;
 	$i = memory.containsKey(id) ? memory.get(id) : 0;
-	System.out.println(id);}
+	}
+    | 'sqrt(' e=expr ')' {
+       $i = (int)Math.sqrt($e.i); 
+    }
+    | 'read()' NEWLINE INT {
+        $i=Integer.parseInt($INT.text);
+    }
+
     | '(' e=expr ')'	          
     ;
 
@@ -54,4 +67,6 @@ MULT: '*' ;
 SUB: '-';
 DIV: '/';
 ADD: '+';
-WS: [ \t\r\n]+ -> skip ;
+NEWLINE:'\r'? '\n' ;
+WS: [ \t]+ -> skip ;
+
