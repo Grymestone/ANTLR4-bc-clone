@@ -3,6 +3,7 @@ grammar calculator;
 @header {
 import java.util.*;
 import java.lang.Math;
+import java.util.Scanner;
 }
 
 @parser::members
@@ -53,8 +54,11 @@ expr returns [double i]:
     | 'sqrt(' e=expr ')' {
        $i = Math.sqrt($e.i); 
     }
-    | 'read()' NEWLINE INT {
-        $i=Integer.parseInt($INT.text);
+    | 'read()' {
+        Scanner reader = new Scanner(System.in);  // Reading from System.in
+        double n = reader.nextDouble(); // Scans the next token of the input as an int.
+        reader.close();
+        $i = n;
     }
     | 's(' expr ')' {
         $i = Math.sin($expr.i);
