@@ -20,7 +20,7 @@ passed=0
 failed=0
 for entry in *.bc
 do
-    cd $where
+    cd "$where"
     printf "${CYAN}---- Running test $entry ----${NC}\n"
     bc_output=$(bc -l <(echo "scale=${scale}"; cat $entry; printf "quit"))
     cd $calculator_path
