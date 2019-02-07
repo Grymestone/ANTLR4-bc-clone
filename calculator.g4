@@ -106,8 +106,6 @@ expr returns [double i, int t]:
     }
     | 's(' e = expr ')' {
         $i = Math.sin($e.i);
-	System.out.println("I: " + $i);
-	System.out.println("Expr: " + $e.text);
     }
     | 'c(' e = expr ')' {
         $i = Math.cos($e.i);
