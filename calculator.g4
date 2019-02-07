@@ -60,7 +60,7 @@ topExpr: printstat NEWLINE
   //{ System.out.println("result: "+ Integer.toString($expr.i));};
 
 stat: 
-    '/*'+ .* '*/'
+    '/*' .*? '*/'
     | expr NEWLINE
     {
           System.out.println($expr.i);
@@ -69,19 +69,24 @@ stat:
         {
 	  String id = $ID.text;
           memory.put(id, $expr.i);
+          if ($expr.t == 1) {
+            System.out.println($expr.i);
+          }
 	}
     | NEWLINE
 ;
 
-expr returns [double i]: 
+expr returns [double i, int t]: 
     '(' e=expr ')'
     {
     	$i = $e.i;
     }
     | er = expr op = (OR | AND) el = expr
-	{$i = beval(false, $er.i, $op.text, $el.i);}
+	{$i = beval(false, $er.i, $op.text, $el.i);
+         $t = 1;}
     | '!' er = expr op = (OR | AND) el = expr
-        {$i = beval(true, $er.i, $op.text, $el.i);}
+        {$i = beval(true, $er.i, $op.text, $el.i);
+        $t=1;}
     | er = expr op = (MULT | '/') el = expr 
     	{$i = eval($er.i, $op.type, $el.i);}
     | er = expr op = ('+' | '-') el = expr
@@ -96,8 +101,8 @@ expr returns [double i]:
        $i = Math.sqrt($e.i); 
     }
     | 'read()' {
-        Scanner reader = new Scanner(System.in);  // Reading from System.in
-        double n = reader.nextDouble(); // Scans the next token of the input as an int.
+        Scanner reader = new Scanner(System.in);
+        double n = reader.nextDouble();
         reader.close();
         $i = n;
     }

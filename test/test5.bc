@@ -1,3 +1,2 @@
-x=read()
-x=x+2
-x
+/* test comment */
+/* testing /* comment */
