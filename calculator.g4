@@ -77,10 +77,8 @@ stat:
 ;
 
 expr returns [double i, int t]: 
-    '(' e=expr ')'
-    {
-    	$i = $e.i;
-    }
+    il = INT dot = '.' ir = INT
+        {$i = Double.parseDouble($il.text + $dot.text + $ir.text);} 
     | er = expr op = (OR | AND) el = expr
 	{$i = beval(false, $er.i, $op.text, $el.i);
          $t = 1;}
@@ -106,17 +104,23 @@ expr returns [double i, int t]:
         reader.close();
         $i = n;
     }
-    | 's(' expr ')' {
-        $i = Math.sin($expr.i);
+    | 's(' e = expr ')' {
+        $i = Math.sin($e.i);
+	System.out.println("I: " + $i);
+	System.out.println("Expr: " + $e.text);
     }
-    | 'c(' expr ')' {
-        $i = Math.cos($expr.i);
+    | 'c(' e = expr ')' {
+        $i = Math.cos($e.i);
     }
-    | 'l(' expr ')' {
-        $i = Math.log($expr.i);
+    | 'l(' e = expr ')' {
+        $i = Math.log($e.i);
     }
-    | 'e(' expr ')' {
-        $i = Math.exp($expr.i);
+    | 'e(' e = expr ')' {
+        $i = Math.exp($e.i);
+    }
+    | '(' e=expr ')'
+    {
+        $i = $e.i;
     }
     ;
 
