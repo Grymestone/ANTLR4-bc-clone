@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Where executable
+# Where antlr files
 calculator_path="../"
 # Name of lexer
 lexer_name="calculator"

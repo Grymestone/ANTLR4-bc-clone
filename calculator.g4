@@ -24,10 +24,12 @@ double eval(double l, int op, double r)
 
 exprList: topExpr (';' topExpr)*';'?;
 
-topExpr: stat+ ;
+topExpr: printstat NEWLINE 
+    |stat+ ;
   //{ System.out.println("result: "+ Integer.toString($expr.i));};
 
-stat: expr NEWLINE
+stat: 
+    expr NEWLINE
     {
           System.out.println($expr.i);
     }
@@ -37,7 +39,6 @@ stat: expr NEWLINE
           memory.put(id, $expr.i);
 	}
     | NEWLINE
-
 ;
 
 expr returns [double i]:
@@ -75,6 +76,14 @@ expr returns [double i]:
     | '(' e=expr ')'	          
     ;
 
+printstat : 'print' st=DQSTRING
+    {
+        String s = $st.text;
+        s = s.substring(1, s.length()-1);
+        s = s.replace("\"\"", "\"");
+        System.out.println(s);
+    };
+
 ID: [_A-Za-z]+ ;
 EQUAL: '=';
 INT: [0-9]+ ;		      
@@ -83,5 +92,6 @@ SUB: '-';
 DIV: '/';
 ADD: '+';
 NEWLINE:'\r'? '\n' ;
+DQSTRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* '"'; 
 WS: [ \t]+ -> skip ;
 
