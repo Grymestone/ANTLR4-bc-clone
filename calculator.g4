@@ -11,6 +11,37 @@ import java.util.Scanner;
 /** "memory" for our calculator; variable/value pairs go here */
 Map<String, Double> memory = new HashMap<String, Double>();
 
+double beval(Boolean neg, double l, String op, double r)
+{ 
+	if (op.equals("||"))
+	{	
+		if (((l > 0) || (r > 0)) && !neg)
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (op.equals("&&"))
+	{
+		if (((l > 0) && (r > 0)) &&  !neg)
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		System.out.println("Bad logic operator.");
+		return 0;
+	}
+}
+
 double eval(double l, int op, double r)
 	{ switch(op) 
 		{ case MULT: return l * r;
@@ -29,7 +60,7 @@ topExpr: printstat NEWLINE
   //{ System.out.println("result: "+ Integer.toString($expr.i));};
 
 stat: 
-    '/*' .* '*/'
+    '/*'+ .* '*/'
     | expr NEWLINE
     {
           System.out.println($expr.i);
@@ -47,6 +78,10 @@ expr returns [double i]:
     {
     	$i = $e.i;
     }
+    | er = expr op = (OR | AND) el = expr
+	{$i = beval(false, $er.i, $op.text, $el.i);}
+    | '!' er = expr op = (OR | AND) el = expr
+        {$i = beval(true, $er.i, $op.text, $el.i);}
     | er = expr op = (MULT | '/') el = expr 
     	{$i = eval($er.i, $op.type, $el.i);}
     | er = expr op = ('+' | '-') el = expr
@@ -95,6 +130,8 @@ MULT: '*' ;
 SUB: '-';
 DIV: '/';
 ADD: '+';
+OR: '||';
+AND: '&&';
 NEWLINE:'\r'? '\n' ;
 DQSTRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* '"'; 
 WS: [ \t]+ -> skip ;
