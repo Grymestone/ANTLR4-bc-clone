@@ -29,7 +29,8 @@ topExpr: printstat NEWLINE
   //{ System.out.println("result: "+ Integer.toString($expr.i));};
 
 stat: 
-    expr NEWLINE
+    '/*' .* '*/'
+    | expr NEWLINE
     {
           System.out.println($expr.i);
     }
@@ -41,7 +42,7 @@ stat:
     | NEWLINE
 ;
 
-expr returns [double i]:
+expr returns [double i]: 
     '(' e=expr ')'
     {
     	$i = $e.i;
