@@ -79,12 +79,6 @@ stat:
 expr returns [double i, int t]: 
     il = INT dot = '.' ir = INT
         {$i = Double.parseDouble($il.text + $dot.text + $ir.text);} 
-    | er = expr op = (OR | AND) el = expr
-	{$i = beval(false, $er.i, $op.text, $el.i);
-         $t = 1;}
-    | '!' er = expr op = (OR | AND) el = expr
-        {$i = beval(true, $er.i, $op.text, $el.i);
-        $t=1;}
     | er = expr op = (MULT | '/') el = expr 
     	{$i = eval($er.i, $op.type, $el.i);}
     | er = expr op = ('+' | '-') el = expr
@@ -120,6 +114,15 @@ expr returns [double i, int t]:
     {
         $i = $e.i;
     }
+    | er = expr op = (OR | AND) el = expr
+        {$i = beval(false, $er.i, $op.text, $el.i);
+         $t = 1;}
+    | '!' '('? er = expr op = (OR | AND) el = expr ')'?
+        {$i = beval(true, $er.i, $op.text, $el.i);
+        $t=1;}
+    | '!' e = expr
+    	{$i = beval(true, $e.i, "||", 0);
+	$t=1;}
     ;
 
 printstat : 'print' st=DQSTRING
