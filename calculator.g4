@@ -38,15 +38,15 @@ stat:
 	  String id = $ID.text;
           memory.put(id, $expr.i);
 	}
-    | '(' el=expr ')' ? (op = (MULT | '/' | '+' | '-') er=expr)
-    {
-    	System.out.println(eval($el.i, $op.type, $er.i));
-    }
     | NEWLINE
 ;
 
 expr returns [double i]:
-er = expr op = (MULT | '/') el = expr 
+    '(' e=expr ')'
+    {
+    	$i = $e.i;
+    }
+    | er = expr op = (MULT | '/') el = expr 
     	{$i = eval($er.i, $op.type, $el.i);}
     | er = expr op = ('+' | '-') el = expr
     	{$i = eval($er.i, $op.type, $el.i);}
