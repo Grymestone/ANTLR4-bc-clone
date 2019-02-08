@@ -9,6 +9,7 @@ import java.util.Scanner;
 @parser::members
 {
 Map<String, Double> vars = new HashMap<String, Double>();
+String buffer;
 
 double beval(Boolean neg, double l, String op, double r)
 { 
@@ -54,12 +55,13 @@ double eval(double l, int op, double r)
 
 exprList: topExpr (';' topExpr)*';'?;
 
-topExpr: printstat
-    |stat+ ;
+topExpr:     |stat+ ;
   //{ System.out.println("result: "+ Integer.toString($expr.i));};
 
 stat: 
     '/*' ((':')?.*)? '*/'
+    |printstat
+
     | expr NEWLINE
     {
           System.out.println($expr.i);
@@ -126,10 +128,15 @@ expr returns [double i, int t]:
 
 
 liststat: expr ((COMMA liststat) | NEWLINE) {
-    System.out.print($expr.i);
-    };
+    if (buffer == null) 
+    buffer = "";
+    buffer = $expr.i + buffer;
+};
 
-printstat : 'print' liststat;
+printstat: 'print' liststat {
+    System.out.print(buffer);
+    buffer = "";
+};
 
 ID: [_A-Za-z]+ ;
 EQUAL: '=';
