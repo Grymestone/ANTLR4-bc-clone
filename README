@@ -1,0 +1,19 @@
+Members: Nicholas Suhlman, Daniel Volya
+
+To build, do `make build`.
+To run, use grun, i.e.: `grun calculator exprList test/test1.bc`
+
+For automated test: `cd test/; ./auto-test.sh`
+Note: some tests are marked incorrect due to integer vs float output (e.g. 1 vs 1.0)
+
+The calculator implements all the features required. Input can be either ints or floats, however all outputs (including booleans) are printed as floating-point numbers.
+
+Features:
+- Comments
+- Variables and expressions with variables
+- Boolean expressions
+- Precedence and order-of-operations
+- read to get input from stdin
+- statements are printed just as bc prints
+- print function takes in list of expressions and prints them in order
+- math library functions (s, c, l, e)
