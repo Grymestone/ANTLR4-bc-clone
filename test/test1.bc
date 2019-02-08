@@ -1,4 +1,6 @@
-print "Hello World!"
+x=5.0
+y=7.0
+print x,y,x+y
 /*
 Expected (from bc):
 Hello World!

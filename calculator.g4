@@ -54,7 +54,7 @@ double eval(double l, int op, double r)
 
 exprList: topExpr (';' topExpr)*';'?;
 
-topExpr: printstat NEWLINE 
+topExpr: printstat
     |stat+ ;
   //{ System.out.println("result: "+ Integer.toString($expr.i));};
 
@@ -124,13 +124,12 @@ expr returns [double i, int t]:
 	$t=1;}
     ;
 
-printstat : 'print' st=DQSTRING
-    {
-        String s = $st.text;
-        s = s.substring(1, s.length()-1);
-        s = s.replace("\"\"", "\"");
-        System.out.println(s);
+
+liststat: expr ((COMMA liststat) | NEWLINE) {
+    System.out.print($expr.i);
     };
+
+printstat : 'print' liststat;
 
 ID: [_A-Za-z]+ ;
 EQUAL: '=';
@@ -143,5 +142,6 @@ OR: '||';
 AND: '&&';
 NEWLINE:'\r'? '\n' ;
 DQSTRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* '"'; 
+COMMA: ',';
 WS: [ \t]+ -> skip ;
 
