@@ -59,7 +59,7 @@ topExpr: printstat
   //{ System.out.println("result: "+ Integer.toString($expr.i));};
 
 stat: 
-    '/*' .*? '*/'
+    '/*' ((':')?.*)? '*/'
     | expr NEWLINE
     {
           System.out.println($expr.i);
