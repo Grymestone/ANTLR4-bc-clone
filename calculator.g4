@@ -8,8 +8,7 @@ import java.util.Scanner;
 
 @parser::members
 {
-/** "memory" for our calculator; variable/value pairs go here */
-Map<String, Double> memory = new HashMap<String, Double>();
+Map<String, Double> vars = new HashMap<String, Double>();
 
 double beval(Boolean neg, double l, String op, double r)
 { 
@@ -68,7 +67,7 @@ stat:
     | ID '=' expr NEWLINE
         {
 	  String id = $ID.text;
-          memory.put(id, $expr.i);
+          vars.put(id, $expr.i);
           if ($expr.t == 1) {
             System.out.println($expr.i);
           }
@@ -87,7 +86,7 @@ expr returns [double i, int t]:
         { $i=Integer.parseInt($INT.text);} 
     | ID
     	{ String id = $ID.text;
-	$i = memory.containsKey(id) ? memory.get(id) : 0;
+	$i = vars.containsKey(id) ? vars.get(id) : 0;
 	}
     | 'sqrt(' e=expr ')' {
        $i = Math.sqrt($e.i); 
