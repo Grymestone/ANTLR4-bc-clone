@@ -21,6 +21,7 @@ failed=0
 for entry in *.bc
 do
     cd "$where"
+    txt=$(cat $entry)
     printf "${CYAN}---- Running test $entry ----${NC}\n"
     bc_output=$(bc -l <(echo "scale=${scale}"; cat $entry; printf "quit"))
     cd $calculator_path
@@ -34,8 +35,11 @@ do
         printf "${RED}FAILED:${NC} $entry\n"
         failed=$((failed+1))
     fi
-    printf "Expected:\n$bc_output\n"
-    printf "Got:\n$antlr_output\n"
+
+    printf "Expected (from bc):\n$bc_output\n"
+    printf "Got (our program):\n$antlr_output\n"
+    printf "$txt\n/*\nExpected (from bc):\n$bc_output\n Got (our program):\n$antlr_output\n*/" > "$where/$entry"
+
 done
 
 printf "${CYAN}---- Result: ----${NC}\n"
